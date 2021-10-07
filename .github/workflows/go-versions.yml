@@ -44,19 +44,26 @@ jobs:
           docker load --input ${{ steps.imagetag.outputs.PATH_TAR }}/github_v1_17_1.tar
           docker load --input ${{ steps.imagetag.outputs.PATH_TAR }}/github_latest_1.tar
 
-      - name: Build Docker images and save
+      - name: Pull base images if no-exist
         if: steps.cache.outputs.cache-hit != 'true'
         run: |
-          mkdir -p ${{ steps.imagetag.outputs.PATH_TAR }}
           : # Pull images one-by-one for stability
           docker pull golang:1.14-alpine
           docker pull golang:1.15-alpine
           docker pull golang:1.16-alpine
           docker pull golang:1.17-alpine
           docker pull golang:alpine
+
+      - name: Build Docker images if no-exists
+        if: steps.cache.outputs.cache-hit != 'true'
+        run: |
+          mkdir -p ${{ steps.imagetag.outputs.PATH_TAR }}
           : # Build container images
           docker-compose --file ./.github/docker-compose.yml build
-          : # Save built images to cache directory
+
+      - name: Save built images if no-exists
+        if: steps.cache.outputs.cache-hit != 'true'
+        run: |
           docker save --output ${{ steps.imagetag.outputs.PATH_TAR }}/github_v1_14_1.tar github_v1_14_1
           docker save --output ${{ steps.imagetag.outputs.PATH_TAR }}/github_v1_15_1.tar github_v1_15_1
           docker save --output ${{ steps.imagetag.outputs.PATH_TAR }}/github_v1_16_1.tar github_v1_16_1
