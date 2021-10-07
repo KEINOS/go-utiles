@@ -7,6 +7,9 @@ on:
     # Runs at 16:05 UTC on Sun (Every Monday at AM 01:05 JST, my time)
     - cron: '5 16 * * SUN'
 
+env:
+  PATH_CACHE: /tmp/docker-img-arch
+
 jobs:
   go:
     name: Run tests on Go via container
@@ -14,13 +17,59 @@ jobs:
     steps:
       - name: Checkout repo
         uses: actions/checkout@v2
-      - name: Run on Go 1.14
+
+      - name: Create image tag
+        id: imagetag
+        run: |
+          HASH_IMAGE=${{ hashFiles('./.github/Dockerfile') }}
+          VARIANT=$(TZ=UTC-9 date '+%Y%m')
+          TAG="${HASH_IMAGE:0:7}:${VARIANT}"
+          PATH_TAR=${{ env.PATH_CACHE }}"/tar"
+          echo "::set-output name=TAG::${TAG}"
+          echo "::set-output name=PATH_TAR::${PATH_TAR}"
+
+      - name: Cache or restore image archive
+        id: cache
+        uses: actions/cache@v2
+        with:
+          path: ${{ env.PATH_CACHE }}
+          key: ${{ steps.imagetag.outputs.TAG }}
+
+      - name: Load Docker images if exist
+        if: steps.cache.outputs.cache-hit == 'true'
+        run: |
+          docker load --input ${{ steps.imagetag.outputs.PATH_TAR }}/github_v1_14_1.tar
+          docker load --input ${{ steps.imagetag.outputs.PATH_TAR }}/github_v1_15_1.tar
+          docker load --input ${{ steps.imagetag.outputs.PATH_TAR }}/github_v1_16_1.tar
+          docker load --input ${{ steps.imagetag.outputs.PATH_TAR }}/github_v1_17_1.tar
+          docker load --input ${{ steps.imagetag.outputs.PATH_TAR }}/github_latest_1.tar
+
+      - name: Build Docker images and save
+        if: steps.cache.outputs.cache-hit != 'true'
+        run: |
+          mkdir -p ${{ steps.imagetag.outputs.PATH_TAR }}
+          : # Pull images one-by-one for stability
+          docker pull golang:1.14-alpine
+          docker pull golang:1.15-alpine
+          docker pull golang:1.16-alpine
+          docker pull golang:1.17-alpine
+          docker pull golang:alpine
+          : # Build container images
+          docker-compose --file ./.github/docker-compose.yml build
+          : # Save built images to cache directory
+          docker save --output ${{ steps.imagetag.outputs.PATH_TAR }}/github_v1_14_1.tar github_v1_14_1
+          docker save --output ${{ steps.imagetag.outputs.PATH_TAR }}/github_v1_15_1.tar github_v1_15_1
+          docker save --output ${{ steps.imagetag.outputs.PATH_TAR }}/github_v1_16_1.tar github_v1_16_1
+          docker save --output ${{ steps.imagetag.outputs.PATH_TAR }}/github_v1_17_1.tar github_v1_17_1
+          docker save --output ${{ steps.imagetag.outputs.PATH_TAR }}/github_latest_1.tar github_latest_1
+
+      - name: Run tests on Go 1.14
         run: docker-compose --file ./.github/docker-compose.yml up v1_14
-      - name: Run on Go 1.15
+      - name: Run tests on Go 1.15
         run: docker-compose --file ./.github/docker-compose.yml up v1_15
-      - name: Run on Go 1.16
+      - name: Run tests on Go 1.16
         run: docker-compose --file ./.github/docker-compose.yml up v1_16
-      - name: Run on Go 1.17
+      - name: Run tests on Go 1.17
         run: docker-compose --file ./.github/docker-compose.yml up v1_17
-      - name: Run on latest Go
+      - name: Run tests on latest Go
         run: docker-compose --file ./.github/docker-compose.yml up latest
