@@ -16,7 +16,7 @@ func TestExitOnErr(t *testing.T) {
 		util.OsExit = oldOsExit
 	}()
 
-	var capStatus int
+	var capStatus int // This should turn to 1
 
 	// Mock os.Exit
 	util.OsExit = func(code int) {
@@ -31,6 +31,7 @@ func TestExitOnErr(t *testing.T) {
 		util.ExitOnErr(err)
 	})
 
+	// Assertions
 	assert.Equal(t, 1, capStatus, "the exit status should be 1 on error")
 	assert.Contains(t, out, "ExitOnError_test.go:27", "the error should contain the line number")
 	assert.Contains(t, out, "foo", "the stderr should contain the original error message")
