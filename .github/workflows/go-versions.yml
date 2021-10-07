@@ -64,11 +64,11 @@ jobs:
       - name: Save built images if no-exists
         if: steps.cache.outputs.cache-hit != 'true'
         run: |
-          docker save --output ${{ steps.imagetag.outputs.PATH_TAR }}/github_v1_14_1.tar github_v1_14_1:latest
-          docker save --output ${{ steps.imagetag.outputs.PATH_TAR }}/github_v1_15_1.tar github_v1_15_1:latest
-          docker save --output ${{ steps.imagetag.outputs.PATH_TAR }}/github_v1_16_1.tar github_v1_16_1:latest
-          docker save --output ${{ steps.imagetag.outputs.PATH_TAR }}/github_v1_17_1.tar github_v1_17_1:latest
-          docker save --output ${{ steps.imagetag.outputs.PATH_TAR }}/github_latest_1.tar github_latest_1:latest
+          docker save --output ${{ steps.imagetag.outputs.PATH_TAR }}/github_v1_14_1.tar github_v1_14:latest
+          docker save --output ${{ steps.imagetag.outputs.PATH_TAR }}/github_v1_15_1.tar github_v1_15:latest
+          docker save --output ${{ steps.imagetag.outputs.PATH_TAR }}/github_v1_16_1.tar github_v1_16:latest
+          docker save --output ${{ steps.imagetag.outputs.PATH_TAR }}/github_v1_17_1.tar github_v1_17:latest
+          docker save --output ${{ steps.imagetag.outputs.PATH_TAR }}/github_latest_1.tar github_latest:latest
 
       - name: Run tests on Go 1.14
         run: docker-compose --file ./.github/docker-compose.yml up v1_14
