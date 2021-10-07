@@ -13,7 +13,7 @@ We run the tests every week scheduled with the below Go versions.
 
 ## Code Scaning
 
-- [![CodeQL](https://github.com/KEINOS/go-utiles/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/KEINOS/utiles/actions/workflows/codeql-analysis.yml)
+[![CodeQL](https://github.com/KEINOS/go-utiles/actions/workflows/codeQL-analysis.yml/badge.svg)](https://github.com/KEINOS/go-utiles/actions/workflows/codeQL-analysis.yml)
 
 ## Security Status
 

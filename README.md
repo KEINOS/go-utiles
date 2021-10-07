@@ -1,3 +1,4 @@
+[![go1.14+](https://github.com/KEINOS/go-utiles/actions/workflows/go-versions.yml/badge.svg)](https://github.com/KEINOS/go-utiles/actions/workflows/go-versions.yml)
 [![Go Reference](https://pkg.go.dev/badge/github.com/KEINOS/go-utiles.svg)](https://pkg.go.dev/github.com/KEINOS/go-utiles)
 
 # go-utiles
@@ -16,3 +17,18 @@ err := errors.New("something went wrong")
 util.ExitOnError(err)
 ```
 
+For other functions and examples, see the [reference](https://pkg.go.dev/github.com/KEINOS/go-utiles).
+
+---
+
+## Statuses
+
+[![Go Report Card](https://goreportcard.com/badge/github.com/KEINOS/go-utiles)](https://goreportcard.com/report/github.com/KEINOS/go-utiles)
+[![Codecov](https://github.com/KEINOS/go-utiles/actions/workflows/code_coverage.yml/badge.svg)](https://github.com/KEINOS/go-utiles/actions/workflows/code_coverage.yml)
+[![CodeQL](https://github.com/KEINOS/go-utiles/actions/workflows/codeQL-analysis.yml/badge.svg)](https://github.com/KEINOS/go-utiles/actions/workflows/codeQL-analysis.yml)
+[![golangci-lint](https://github.com/KEINOS/go-utiles/actions/workflows/golangci-lint.yml/badge.svg)](https://github.com/KEINOS/go-utiles/actions/workflows/golangci-lint.yml)
+
+## License
+
+- [MIT](https://github.com/KEINOS/go-utiles/LICENSE.txt) License. Copyright (c) [KEINOS](https://github.com/KEINOS) and [The Contributors](https://github.com/KEINOS/go-utiles/graphs/contributors).
+  
