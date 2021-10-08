@@ -24,11 +24,10 @@ For other functions and examples, see the [reference](https://pkg.go.dev/github.
 ## Statuses
 
 [![Go Report Card](https://goreportcard.com/badge/github.com/KEINOS/go-utiles)](https://goreportcard.com/report/github.com/KEINOS/go-utiles)
-[![Codecov](https://github.com/KEINOS/go-utiles/actions/workflows/code_coverage.yml/badge.svg)](https://github.com/KEINOS/go-utiles/actions/workflows/code_coverage.yml)
+[![codecov](https://codecov.io/gh/KEINOS/go-utiles/branch/main/graph/badge.svg?token=uW30s2bK8M)](https://codecov.io/gh/KEINOS/go-utiles)
 [![CodeQL](https://github.com/KEINOS/go-utiles/actions/workflows/codeQL-analysis.yml/badge.svg)](https://github.com/KEINOS/go-utiles/actions/workflows/codeQL-analysis.yml)
 [![golangci-lint](https://github.com/KEINOS/go-utiles/actions/workflows/golangci-lint.yml/badge.svg)](https://github.com/KEINOS/go-utiles/actions/workflows/golangci-lint.yml)
 
 ## License
 
 - [MIT](https://github.com/KEINOS/go-utiles/LICENSE.txt) License. Copyright (c) [KEINOS](https://github.com/KEINOS) and [The Contributors](https://github.com/KEINOS/go-utiles/graphs/contributors).
-  

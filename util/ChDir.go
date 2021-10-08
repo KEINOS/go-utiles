@@ -5,12 +5,12 @@ import (
 )
 
 var (
-	// OsGetwd is a copy for os.Getwd to ease mocking during test.
+	// OsGetwd is a copy of os.Getwd to ease mocking during test.
 	//
 	// All functions of this package that needs to use os.Getwd uses OsGetwd instead.
 	// See the example in the test of ChDir for how-to-mock.
 	OsGetwd = os.Getwd
-	// OsChdir is a copy for os.Chdir to ease mocking during test.
+	// OsChdir is a copy of os.Chdir to ease mocking during test.
 	//
 	// All functions of this package that needs to use os.Chdir uses OsChdir instead.
 	// See the example in the test of ChDir for how-to-mock.

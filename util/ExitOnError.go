@@ -7,9 +7,9 @@ import (
 	"golang.org/x/xerrors"
 )
 
-// OsExit is a copy for os.Exit to ease mocking during test.
+// OsExit is a copy of os.Exit to ease mocking during test.
 //
-// All functions of this package that needs to os.Exit uses OsExit instead.
+// All functions of this package that needs to use os.Exit uses OsExit instead.
 // See the example of ExitOnError for how-to-mock.
 var OsExit = os.Exit
 
