@@ -12,31 +12,42 @@ import (
 //  Example usage
 // ----------------------------------------------------------------------------
 
-func ExamplePathExists() {
-	fmt.Println(util.PathExists("./PathExists_test.go"))
-	fmt.Println(util.PathExists("../util"))
-	fmt.Println(util.PathExists("./non-existing"))
+func ExampleIsDir() {
+	// Existing dir
+	if util.IsDir("../testdata/sample_data") {
+		fmt.Println("is dir")
+	}
+
+	// Not existing dir
+	if !util.IsDir("./foobar") {
+		fmt.Println("not a dir")
+	}
+
+	// File exists but not a dir
+	if !util.IsDir("./IsDir_test.go") {
+		fmt.Println("not a dir")
+	}
 
 	// Output:
-	// true
-	// true
-	// false
+	// is dir
+	// not a dir
+	// not a dir
 }
 
 // ----------------------------------------------------------------------------
 //  Tests
 // ----------------------------------------------------------------------------
 
-func TestPathExists(t *testing.T) {
+func TestIsDir(t *testing.T) {
 	for path, expect := range map[string]bool{
 		"sample_data":             true,
-		"sample_data/sample.json": true,
-		"sample_data/.sample":     true,
+		"sample_data/sample.json": false,
+		"sample_data/.sample":     false,
 		"unknown-dir":             false,
 		"unknown-file":            false,
 		".unknown-dotfile":        false,
 	} {
-		actual := util.PathExists("../testdata/" + path)
+		actual := util.IsDir("../testdata/" + path)
 		assert.Equal(t, expect, actual, "Failed data: %s", path)
 	}
 }

@@ -1,4 +1,6 @@
-# Docker Compose file for testing on multiple Go versions
+# Docker Compose file for testing on multiple Go versions.
+# Run the below from the root of the repo:
+#   docker-compose --file ./.github/docker-compose.yml up
 version: "3.9"
 services:
   v1_14:

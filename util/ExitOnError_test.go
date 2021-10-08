@@ -1,6 +1,8 @@
 package util_test
 
 import (
+	"errors"
+	"fmt"
 	"testing"
 
 	"github.com/KEINOS/go-utiles/util"
@@ -8,6 +10,38 @@ import (
 	"github.com/stretchr/testify/assert"
 	"golang.org/x/xerrors"
 )
+
+// ----------------------------------------------------------------------------
+//  Example usage
+// ----------------------------------------------------------------------------
+
+func ExampleExitOnErr() {
+	/*
+		Example to mock OsExit in ExitOnErr
+	*/
+	// Backup and defer restoration
+	oldOsExit := util.OsExit
+	defer func() {
+		util.OsExit = oldOsExit
+	}()
+
+	// Mock OsExit
+	util.OsExit = func(code int) {
+		fmt.Println("the exit code was:", code)
+	}
+
+	// Create error
+	err := errors.New("foo")
+
+	util.ExitOnErr(err)
+
+	// Output:
+	// the exit code was: 1
+}
+
+// ----------------------------------------------------------------------------
+//  Test
+// ----------------------------------------------------------------------------
 
 func TestExitOnErr(t *testing.T) {
 	// Backup and recover os.Exit
@@ -33,6 +67,6 @@ func TestExitOnErr(t *testing.T) {
 
 	// Assertions
 	assert.Equal(t, 1, capStatus, "the exit status should be 1 on error")
-	assert.Contains(t, out, "ExitOnError_test.go:27", "the error should contain the line number")
+	assert.Contains(t, out, "ExitOnError_test.go:61", "the error should contain the line number")
 	assert.Contains(t, out, "foo", "the stderr should contain the original error message")
 }
