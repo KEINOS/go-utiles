@@ -14,6 +14,7 @@ import "github.com/KEINOS/go-utiles/util"
 - [func CreateTemp(dir string, pattern string) (*os.File, error)](<#func-createtemp>)
 - [func ExitOnErr(err error)](<#func-exitonerr>)
 - [func FmtStructPretty(val interface{}, prefixes ...string) string](<#func-fmtstructpretty>)
+- [func GetMods() []map[string]string](<#func-getmods>)
 - [func GetNameBin() string](<#func-getnamebin>)
 - [func HashBLAKE3(input string, lenHash int) (hashed string, err error)](<#func-hashblake3>)
 - [func HashStruct(input interface{}, lenHash int) (string, error)](<#func-hashstruct>)
@@ -50,6 +51,14 @@ All functions of this package that needs to use os\.Exit uses OsExit instead\. S
 
 ```go
 var OsExit = os.Exit
+```
+
+ReadBuildInfo is a copy of debug\.ReadBuildInfo to ease mocking during test for GetMods\.
+
+This package uses this util\.ReadBuildInfo insetead of debug\.ReadBuildInfo\.
+
+```go
+var ReadBuildInfo = debug.ReadBuildInfo
 ```
 
 ## func ChDir
@@ -351,6 +360,47 @@ func main() {
   "foo",
   "bar"
 ]
+```
+
+</p>
+</details>
+
+## func GetMods
+
+```go
+func GetMods() []map[string]string
+```
+
+GetMods returns a list of external modules used in the package\. The list contains: module name\, path and the version\.
+
+<details><summary>Example</summary>
+<p>
+
+```go
+package main
+
+import (
+	"fmt"
+	"github.com/KEINOS/go-utiles/util"
+)
+
+func main() {
+	listMods := util.GetMods()
+
+	for _, modInfo := range listMods {
+		fmt.Println(modInfo["name"])
+		fmt.Println(modInfo["path"])
+		fmt.Println(modInfo["version"])
+	}
+}
+```
+
+#### Output
+
+```
+a
+n/a
+n/a
 ```
 
 </p>
