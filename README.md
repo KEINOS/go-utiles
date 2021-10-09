@@ -17,7 +17,7 @@ err := errors.New("something went wrong")
 util.ExitOnError(err)
 ```
 
-For other functions and examples, see the [reference](https://pkg.go.dev/github.com/KEINOS/go-utiles).
+For more functions and examples, see the [README.md](https://github.com/KEINOS/go-utiles/util) under ./util or the [reference](https://pkg.go.dev/github.com/KEINOS/go-utiles).
 
 ---
 

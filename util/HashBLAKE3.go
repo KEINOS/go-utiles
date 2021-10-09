@@ -6,14 +6,15 @@ import (
 	"lukechampine.com/blake3"
 )
 
-// HashBLAKE3 returns the hashed value of "input" with length of "len".
+// HashBLAKE3 returns the hashed value of "input" with length of "lenHash".
+// The lenHash must be in the range between 1-1024.
 //
 // The hash algorithm is based on BLAKE3 so it is fast but NOT suitable for
 // cryptographic purposes. Only suitable for hashing a small range of values
 // such as IDs or temporary values.
 //
 // The input will be hashed with BLAKE3 algorithm then encodes it to Base58
-// (Base58BTC) and returns the first "len" bytes of the results.
+// (Base58BTC) and returns the first "lenHash" bytes of the results.
 func HashBLAKE3(input string, lenHash int) (hashed string, err error) {
 	if lenHash > 1024 || lenHash < 1 {
 		return "", xerrors.Errorf("length error. It should be between 1-1024. Len:%v", lenHash)
