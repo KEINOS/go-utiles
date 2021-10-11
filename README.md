@@ -1,3 +1,4 @@
+<!-- markdownlint-disable MD041 -->
 [![go1.14+](https://github.com/KEINOS/go-utiles/actions/workflows/go-versions.yml/badge.svg)](https://github.com/KEINOS/go-utiles/actions/workflows/go-versions.yml)
 [![Go Reference](https://pkg.go.dev/badge/github.com/KEINOS/go-utiles.svg)](https://pkg.go.dev/github.com/KEINOS/go-utiles/util)
 
