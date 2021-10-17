@@ -12,6 +12,8 @@ import "github.com/KEINOS/go-utiles/util"
 - [func ChDir(pathDir string) (deferReturn func())](<#func-chdir>)
 - [func ChDirHome() func()](<#func-chdirhome>)
 - [func CreateTemp(dir string, pattern string) (*os.File, error)](<#func-createtemp>)
+- [func DecodeBase58(data string) ([]byte, error)](<#func-decodebase58>)
+- [func EncodeBase58(input []byte) (string, error)](<#func-encodebase58>)
 - [func ExitOnErr(err error)](<#func-exitonerr>)
 - [func FmtStructPretty(val interface{}, prefixes ...string) string](<#func-fmtstructpretty>)
 - [func GetMods() []map[string]string](<#func-getmods>)
@@ -24,7 +26,9 @@ import "github.com/KEINOS/go-utiles/util"
 - [func PathExists(path string) bool](<#func-pathexists>)
 - [func RandStr(length int) string](<#func-randstr>)
 - [func ReadFile(path string) ([]byte, error)](<#func-readfile>)
+- [func SUM8(input string) string](<#func-sum8>)
 - [func UniqSliceString(input []string) []string](<#func-uniqslicestring>)
+- [func VerifySUM8(inputWithCheckSum string) bool](<#func-verifysum8>)
 - [func WriteTmpFile(data string) (pathSaved string, funcCleanUp func(), err error)](<#func-writetmpfile>)
 
 
@@ -226,6 +230,97 @@ func main() {
 ```
 file exists
 temp file cleaned
+```
+
+</p>
+</details>
+
+## func DecodeBase58
+
+```go
+func DecodeBase58(data string) ([]byte, error)
+```
+
+DecodeBase58 takes a encoded string of EncodeBase58 and decodes into a bytes buffer\.
+
+<details><summary>Example</summary>
+<p>
+
+```go
+package main
+
+import (
+	"fmt"
+	"github.com/KEINOS/go-utiles/util"
+	"log"
+)
+
+func main() {
+	input := "abcdefg"
+
+	encoded, err := util.EncodeBase58([]byte(input))
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	fmt.Println(encoded)
+
+	decoded, err := util.DecodeBase58(encoded)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	fmt.Println(string(decoded))
+
+}
+```
+
+#### Output
+
+```
+4h3c6xC6Mc
+abcdefg
+```
+
+</p>
+</details>
+
+## func EncodeBase58
+
+```go
+func EncodeBase58(input []byte) (string, error)
+```
+
+EncodeBase58 returns the Base58 encoded string using Multibase Base58BTC format without encode type prefix "z"\.
+
+<details><summary>Example</summary>
+<p>
+
+```go
+package main
+
+import (
+	"fmt"
+	"github.com/KEINOS/go-utiles/util"
+	"log"
+)
+
+func main() {
+	input := "abcdefg"
+
+	result, err := util.EncodeBase58([]byte(input))
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	fmt.Println(result)
+}
+```
+
+#### Output
+
+```
+4h3c6xC6Mc
 ```
 
 </p>
@@ -497,7 +592,7 @@ Length: 16
 func HashStruct(input interface{}, lenHash int) (string, error)
 ```
 
-GetHashStruct returns the hash value of the input struct with the given length\.
+HashStruct returns the hash value of the input struct with the given length\.
 
 Note that the hash value is only for change detection purposes and NOT to detect falsification\.
 
@@ -767,6 +862,53 @@ func ReadFile(path string) ([]byte, error)
 
 ReadFile is similar to os\.ReadFile inf Go v1\.16\+\. Aim to use for Go v1\.14 and 1\.15 compatibility\.
 
+## func SUM8
+
+```go
+func SUM8(input string) string
+```
+
+SUM8 returns the sum8 algorithm checksum of input as a 1 Byte\(8 bit\, 2 chars\) hex string\.
+
+This value can be verified by VeifySUM8 function by attaching the checksum value to the input as below\.
+
+```
+input := "foo bar buz"
+checksum := util.SUM8(input)
+if util.VerifySUM8(input + checksum) {
+    fmt.Println("ok")
+}
+
+https://play.golang.org/p/HPjGBJt7f_6
+```
+
+<details><summary>Example</summary>
+<p>
+
+```go
+package main
+
+import (
+	"fmt"
+	"github.com/KEINOS/go-utiles/util"
+)
+
+func main() {
+	// Get sum8 checksum
+	fmt.Println(util.SUM8("abcdefghijk"))
+
+}
+```
+
+#### Output
+
+```
+9e
+```
+
+</p>
+</details>
+
 ## func UniqSliceString
 
 ```go
@@ -805,6 +947,46 @@ func main() {
 
 ```
 [one two three]
+```
+
+</p>
+</details>
+
+## func VerifySUM8
+
+```go
+func VerifySUM8(inputWithCheckSum string) bool
+```
+
+VerifySUM8 は inputWithCheckSum の末尾 2 桁に SUM8 のチェックサムが付いた文 字列が有効な場合に true を返します。
+
+<details><summary>Example</summary>
+<p>
+
+```go
+package main
+
+import (
+	"fmt"
+	"github.com/KEINOS/go-utiles/util"
+)
+
+func main() {
+	input := "abcdefghijk" // target data
+	checksum := "9e"       // checksum value (result of: util.SUM8(input))
+
+	// Verify the value with checksum
+	if data := input + checksum; util.VerifySUM8(data) {
+		fmt.Println("checksum is valid")
+	}
+
+}
+```
+
+#### Output
+
+```
+checksum is valid
 ```
 
 </p>
