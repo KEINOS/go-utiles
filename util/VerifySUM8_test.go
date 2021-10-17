@@ -12,11 +12,8 @@ func ExampleVerifySUM8() {
 	input := "abcdefghijk" // target data
 	checksum := "9e"       // checksum value (result of: util.SUM8(input))
 
-	// Value with sum8 checksum
-	data := input + checksum
-
-	// Verify
-	if util.VerifySUM8(data) {
+	// Verify the value with checksum
+	if data := input + checksum; util.VerifySUM8(data) {
 		fmt.Println("checksum is valid")
 	}
 

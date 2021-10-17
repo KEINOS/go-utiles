@@ -1,7 +1,6 @@
 package util
 
 import (
-	"github.com/multiformats/go-multibase"
 	"golang.org/x/xerrors"
 	"lukechampine.com/blake3"
 )
@@ -28,12 +27,11 @@ func HashBLAKE3(input string, lenHash int) (hashed string, err error) {
 	if err == nil {
 		byteHash := hasher.Sum(nil)
 
-		hashed, err = multibase.Encode(multibase.Base58BTC, byteHash)
+		hashed, err = EncodeBase58(byteHash)
 	}
 
 	if err == nil {
-		// Trim the 1st base-encode type character of multibase
-		hashed = hashed[1 : lenHash+1]
+		hashed = hashed[0:lenHash]
 	}
 
 	return hashed, err
