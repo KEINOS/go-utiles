@@ -1,6 +1,6 @@
 package util
 
-// GetHashStruct returns the hash value of the input struct with the given length.
+// HashStruct returns the hash value of the input struct with the given length.
 //
 // Note that the hash value is only for change detection purposes and NOT to detect falsification.
 func HashStruct(input interface{}, lenHash int) (string, error) {
