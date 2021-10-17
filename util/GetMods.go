@@ -3,6 +3,7 @@ package util
 import (
 	"path/filepath"
 	"runtime/debug"
+	"strings"
 )
 
 // ReadBuildInfo is a copy of debug.ReadBuildInfo to ease mocking during test
@@ -30,13 +31,19 @@ func GetMods() []map[string]string {
 
 	for _, modDep := range mods {
 		modsFound = append(modsFound, map[string]string{
-			"name":    filepath.Base(modDep.Path),
+			"name":    getModName(modDep),
 			"path":    modDep.Path,
 			"version": modDep.Version,
 		})
 	}
 
 	return modsFound
+}
+
+func getModName(modDep *debug.Module) string {
+	noVer := strings.ReplaceAll(modDep.Path, "/"+modDep.Version, "")
+
+	return filepath.Base(noVer)
 }
 
 func getModuleInfo() []*debug.Module {
