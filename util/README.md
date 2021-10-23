@@ -9,13 +9,17 @@ import "github.com/KEINOS/go-utiles/util"
 ## Index
 
 - [Variables](<#variables>)
+- [func Base58ToUInt(enc string) (uint, error)](<#func-base58touint>)
 - [func ChDir(pathDir string) (deferReturn func())](<#func-chdir>)
 - [func ChDirHome() func()](<#func-chdirhome>)
+- [func ConvBytes2Uint(input []byte) uint](<#func-convbytes2uint>)
+- [func ConvUint2Bytes(i uint) []byte](<#func-convuint2bytes>)
 - [func CreateTemp(dir string, pattern string) (*os.File, error)](<#func-createtemp>)
 - [func DecodeBase58(data string) ([]byte, error)](<#func-decodebase58>)
 - [func EncodeBase58(input []byte) (string, error)](<#func-encodebase58>)
 - [func ExitOnErr(err error)](<#func-exitonerr>)
 - [func FmtStructPretty(val interface{}, prefixes ...string) string](<#func-fmtstructpretty>)
+- [func GenMask(lenBit int) uint](<#func-genmask>)
 - [func GetMods() []map[string]string](<#func-getmods>)
 - [func GetNameBin() string](<#func-getnamebin>)
 - [func HashBLAKE3(input string, lenHash int) (hashed string, err error)](<#func-hashblake3>)
@@ -26,9 +30,10 @@ import "github.com/KEINOS/go-utiles/util"
 - [func PathExists(path string) bool](<#func-pathexists>)
 - [func RandStr(length int) string](<#func-randstr>)
 - [func ReadFile(path string) ([]byte, error)](<#func-readfile>)
-- [func SUM8(input string) string](<#func-sum8>)
+- [func SUM(mask uint, input string) uint](<#func-sum>)
+- [func UIntToBase58(value uint) (string, error)](<#func-uinttobase58>)
 - [func UniqSliceString(input []string) []string](<#func-uniqslicestring>)
-- [func VerifySUM8(inputWithCheckSum string) bool](<#func-verifysum8>)
+- [func VerifySUM(mask uint, input string, sum uint) bool](<#func-verifysum>)
 - [func WriteTmpFile(data string) (pathSaved string, funcCleanUp func(), err error)](<#func-writetmpfile>)
 
 
@@ -49,6 +54,14 @@ var (
 )
 ```
 
+MultibaseBase58BTC is a copy of multibase\.Base58BTC to ease mock multibase\.Base58BTC for testing\.
+
+This library uses MultibaseBase58BTC instead of multibase\.Base58BTC\, assign a dummy function to mock it's behavior\.
+
+```go
+var MultibaseBase58BTC multibase.Encoding = multibase.Base58BTC
+```
+
 OsExit is a copy of os\.Exit to ease mocking during test\.
 
 All functions of this package that needs to use os\.Exit uses OsExit instead\. See the example of ExitOnError for how\-to\-mock\.
@@ -64,6 +77,56 @@ This package uses this util\.ReadBuildInfo insetead of debug\.ReadBuildInfo\.
 ```go
 var ReadBuildInfo = debug.ReadBuildInfo
 ```
+
+## func Base58ToUInt
+
+```go
+func Base58ToUInt(enc string) (uint, error)
+```
+
+Base58ToUInt returns the decoded value of enc\. The enc value must be Base58 encoded\.
+
+This function is basically used for human readable checksum by encoding/decoding the checksum values to Base58 and vice versa\.
+
+<details><summary>Example</summary>
+<p>
+
+```go
+package main
+
+import (
+	"fmt"
+	"github.com/KEINOS/go-utiles/util"
+	"log"
+)
+
+func main() {
+	const (
+		encValue = "zz"       // Base58 encoded of value 3363
+		expect   = uint(3363) // unsigned expect value
+	)
+
+	// Decode to uint
+	actual, err := util.Base58ToUInt(encValue)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	if expect == actual {
+		fmt.Println("it is a valid checksum!")
+	}
+
+}
+```
+
+#### Output
+
+```
+it is a valid checksum!
+```
+
+</p>
+</details>
 
 ## func ChDir
 
@@ -171,6 +234,129 @@ moved to user's home dir
 </p>
 </details>
 
+## func ConvBytes2Uint
+
+```go
+func ConvBytes2Uint(input []byte) uint
+```
+
+ConvBytes2Uint converts \[\]byte \(big endian\) to uint\.
+
+To convert uint to \[\]byte use ConvUint2Bytes\(\)\.
+
+<details><summary>Example</summary>
+<p>
+
+```go
+package main
+
+import (
+	"fmt"
+	"github.com/KEINOS/go-utiles/util"
+)
+
+func main() {
+	// Bytes in big endian
+	input := []byte{0, 0, 0, 0, 0, 0, 48, 57} // = uint64(12345)
+
+	resultUint64 := util.ConvBytes2Uint(input)
+	fmt.Println(resultUint64)
+
+	// To convert uint64 to []byte use ConvUint2Bytes().
+	resultByteSlice := util.ConvUint2Bytes(resultUint64)
+	fmt.Println(resultByteSlice)
+
+}
+```
+
+#### Output
+
+```
+12345
+[48 57]
+```
+
+</p>
+</details>
+
+## func ConvUint2Bytes
+
+```go
+func ConvUint2Bytes(i uint) []byte
+```
+
+ConvUint2Bytes converts uint to \[\]byte \(big endian\)\.
+
+To conver \[\]byte to uint use ConvBytes2Uint\(\)\.
+
+<details><summary>Example</summary>
+<p>
+
+```go
+package main
+
+import (
+	"fmt"
+	"github.com/KEINOS/go-utiles/util"
+)
+
+func main() {
+	input := uint(12345) // 0x30 0x39
+
+	resultByteSlice := util.ConvUint2Bytes(input)
+
+	fmt.Println(resultByteSlice)
+	fmt.Printf("%#v\n", resultByteSlice)
+
+	resultUint64 := util.ConvBytes2Uint(resultByteSlice)
+	fmt.Println(resultUint64)
+
+}
+```
+
+#### Output
+
+```
+[48 57]
+[]byte{0x30, 0x39}
+12345
+```
+
+</p>
+</details>
+
+<details><summary>Example</summary>
+<p>
+
+```go
+package main
+
+import (
+	"fmt"
+	"github.com/KEINOS/go-utiles/util"
+)
+
+func main() {
+	input := -123456789
+
+	resultByteSlice := util.ConvUint2Bytes(uint(input)) // note the uint conversion
+	resultUint64 := util.ConvBytes2Uint(resultByteSlice)
+
+	fmt.Println(input)
+	fmt.Println(int64(resultUint64)) // note the int64
+}
+```
+
+#### Output
+
+```
+-123456789
+-123456789
+```
+
+</p>
+</details>
+
 ## func CreateTemp
 
 ```go
@@ -258,19 +444,21 @@ import (
 func main() {
 	input := "abcdefg"
 
+	// Encode
 	encoded, err := util.EncodeBase58([]byte(input))
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	fmt.Println(encoded)
+	fmt.Println("Encoded:", encoded)
 
+	// Decode
 	decoded, err := util.DecodeBase58(encoded)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	fmt.Println(string(decoded))
+	fmt.Println("Decoded:", string(decoded))
 
 }
 ```
@@ -278,8 +466,8 @@ func main() {
 #### Output
 
 ```
-4h3c6xC6Mc
-abcdefg
+Encoded: 4h3c6xC6Mc
+Decoded: abcdefg
 ```
 
 </p>
@@ -291,7 +479,9 @@ abcdefg
 func EncodeBase58(input []byte) (string, error)
 ```
 
-EncodeBase58 returns the Base58 encoded string using Multibase Base58BTC format without encode type prefix "z"\.
+EncodeBase58 returns the Base58 encoded string using Multibase Base58BTC format without the encode type prefix "z"\.
+
+The used chars are: "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz" See: https://en.bitcoin.it/wiki/Base58Check_encoding
 
 <details><summary>Example</summary>
 <p>
@@ -455,6 +645,63 @@ func main() {
   "foo",
   "bar"
 ]
+```
+
+</p>
+</details>
+
+## func GenMask
+
+```go
+func GenMask(lenBit int) uint
+```
+
+GenMask returns a lenBit length value filled with bit 1\.
+
+The lenBit should be between 0\-64\. Any greater number than 64 will be 64\.
+
+```
+i := util.GenMask(0) // -> 0b0
+i := util.GenMask(1) // -> 0b1
+i := util.GenMask(4) // -> 0b1111
+i := util.GenMask(8) // -> 0b11111111
+```
+
+<details><summary>Example</summary>
+<p>
+
+```go
+package main
+
+import (
+	"fmt"
+	"github.com/KEINOS/go-utiles/util"
+)
+
+func main() {
+	fmt.Printf("%b\n", util.GenMask(0))
+	fmt.Printf("%b\n", util.GenMask(1))
+	fmt.Printf("%b\n", util.GenMask(2))
+	fmt.Printf("%b\n", util.GenMask(4))
+	fmt.Printf("%b\n", util.GenMask(11))
+	fmt.Printf("%b\n", util.GenMask(64))
+	fmt.Printf("%b\n", util.GenMask(65))   // Max is 64
+	fmt.Printf("%b\n", util.GenMask(1024)) // Max is 64
+
+}
+```
+
+#### Output
+
+```
+0
+1
+11
+1111
+11111111111
+1111111111111111111111111111111111111111111111111111111111111111
+1111111111111111111111111111111111111111111111111111111111111111
+1111111111111111111111111111111111111111111111111111111111111111
 ```
 
 </p>
@@ -862,25 +1109,17 @@ func ReadFile(path string) ([]byte, error)
 
 ReadFile is similar to os\.ReadFile inf Go v1\.16\+\. Aim to use for Go v1\.14 and 1\.15 compatibility\.
 
-## func SUM8
+## func SUM
 
 ```go
-func SUM8(input string) string
+func SUM(mask uint, input string) uint
 ```
 
-SUM8 returns the sum8 algorithm checksum of input as a 1 Byte\(8 bit\, 2 chars\) hex string\.
+SUM returns the checksum of the input based on 2's complement of the sum with max length of the mask\.
 
-This value can be verified by VeifySUM8 function by attaching the checksum value to the input as below\.
+The returned sum will be between 1 \- mask\. For example if the mask is 255\, then the checksum will be between 1\-255\.
 
-```
-input := "foo bar buz"
-checksum := util.SUM8(input)
-if util.VerifySUM8(input + checksum) {
-    fmt.Println("ok")
-}
-
-https://play.golang.org/p/HPjGBJt7f_6
-```
+To verify the checksum with the input\, use VerifySUM\(\) function\.
 
 <details><summary>Example</summary>
 <p>
@@ -894,8 +1133,11 @@ import (
 )
 
 func main() {
-	// Get sum8 checksum
-	fmt.Println(util.SUM8("abcdefghijk"))
+	input := "foo bar"
+	sum8 := uint(0b11111111) // 8bit mask = 255 = checksum between 1-255
+
+	checksum := util.SUM(sum8, input)
+	fmt.Printf("%d (0x%x, %T)\n", checksum, checksum, checksum)
 
 }
 ```
@@ -903,7 +1145,180 @@ func main() {
 #### Output
 
 ```
-9e
+156 (0x9c, uint)
+```
+
+</p>
+</details>
+
+<details><summary>Example</summary>
+<p>
+
+```go
+package main
+
+import (
+	"fmt"
+	"github.com/KEINOS/go-utiles/util"
+	"log"
+)
+
+func main() {
+	const (
+		input     = "foo bar"
+		sumBase58 = uint(3363) // 3363 is the max number of 2 digit Base58 = "zz"
+	)
+
+	// Create checksum
+	checksum := util.SUM(sumBase58, input)
+	fmt.Printf("Checksum: %v (0x%x, 0b%b, %T)\n", checksum, checksum, checksum, checksum)
+
+	// Encode to Base58
+	enc, err := util.UIntToBase58(checksum)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	fmt.Printf("Base58 encoded: %v (%T)\n", enc, enc)
+}
+```
+
+#### Output
+
+```
+Checksum: 666 (0x29a, 0b1010011010, uint)
+Base58 encoded: CV (string)
+```
+
+</p>
+</details>
+
+<details><summary>Example</summary>
+<p>
+
+```go
+package main
+
+import (
+	"fmt"
+	"github.com/KEINOS/go-utiles/util"
+)
+
+func main() {
+	input := util.RandStr(1024) // 1024 char length random string
+
+	sum8 := uint(255) // checksum for max 8bit = 0b11111111 = 0d255
+
+	checksum := util.SUM(sum8, input)
+
+	// Verify
+	if util.VerifySUM(sum8, input, checksum) {
+		fmt.Print("verify success! checksum of the input is valid")
+	}
+
+}
+```
+
+#### Output
+
+```
+verify success! checksum of the input is valid
+```
+
+</p>
+</details>
+
+## func UIntToBase58
+
+```go
+func UIntToBase58(value uint) (string, error)
+```
+
+UIntToBase58 returns Base58\(BTC\) encoded string of the given uint value\. Note that this function returns in 2 digit minimum\. Such as 0d0 \-\> "11"\.
+
+This function is basically used for human readable checksum by encoding/decoding the checksum values to Base58 and vice versa\.
+
+<details><summary>Example</summary>
+<p>
+
+```go
+package main
+
+import (
+	"fmt"
+	"github.com/KEINOS/go-utiles/util"
+	"log"
+)
+
+func main() {
+	// In base58(BTC), zero becomes "1". See EncodeBase58().
+	inputZero := uint(0)
+	if encZero, err := util.UIntToBase58(inputZero); err != nil {
+		log.Fatal(err)
+	} else {
+		fmt.Println(encZero) // note that the result is in 2 digit -> "11"
+	}
+
+	inputTen := uint(10)
+	if encTen, err := util.UIntToBase58(inputTen); err != nil {
+		log.Fatal(err)
+	} else {
+		fmt.Println(encTen)
+	}
+
+	inputHuge := uint(123456789)
+	if encHuge, err := util.UIntToBase58(inputHuge); err != nil {
+		log.Fatal(err)
+	} else {
+		fmt.Println(encHuge)
+	}
+
+}
+```
+
+#### Output
+
+```
+11
+1B
+BukQL
+```
+
+</p>
+</details>
+
+<details><summary>Example</summary>
+<p>
+
+This function is used when you need a more accurate checksum in 2 digit string\.
+
+```go
+package main
+
+import (
+	"fmt"
+	"github.com/KEINOS/go-utiles/util"
+	"log"
+)
+
+func main() {
+	input := uint(3363) // 3363 is the max value of 2 digit Base58 "zz"
+
+	// Encode the checksum to Base58 as a string
+	enc, err := util.UIntToBase58(input)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	fmt.Printf("Encoded checksum: %v (%T)", enc, enc)
+
+}
+```
+
+#### Output
+
+```
+Encoded checksum: zz (string)
 ```
 
 </p>
@@ -952,13 +1367,11 @@ func main() {
 </p>
 </details>
 
-## func VerifySUM8
+## func VerifySUM
 
 ```go
-func VerifySUM8(inputWithCheckSum string) bool
+func VerifySUM(mask uint, input string, sum uint) bool
 ```
-
-VerifySUM8 は inputWithCheckSum の末尾 2 桁に SUM8 のチェックサムが付いた文 字列が有効な場合に true を返します。
 
 <details><summary>Example</summary>
 <p>
@@ -972,12 +1385,20 @@ import (
 )
 
 func main() {
-	input := "abcdefghijk" // target data
-	checksum := "9e"       // checksum value (result of: util.SUM8(input))
+	const (
+		input  = "abcdefghijk"    // target data
+		bitLen = uint(0b11111111) // 0b11111111 = 255
+	)
 
-	// Verify the value with checksum
-	if data := input + checksum; util.VerifySUM8(data) {
-		fmt.Println("checksum is valid")
+	// Create checksum between 1-255
+	checksum := util.SUM(bitLen, input)
+	fmt.Printf("Checksum is: %v (0b%b)\n", checksum, checksum)
+
+	// Verify
+	if util.VerifySUM(bitLen, input, checksum) {
+		fmt.Println("Check result: ok")
+	} else {
+		fmt.Println("Check result: ng")
 	}
 
 }
@@ -986,7 +1407,8 @@ func main() {
 #### Output
 
 ```
-checksum is valid
+Checksum is: 103 (0b1100111)
+Check result: ok
 ```
 
 </p>
