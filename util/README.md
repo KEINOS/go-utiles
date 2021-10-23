@@ -39,21 +39,6 @@ import "github.com/KEINOS/go-utiles/util"
 
 ## Variables
 
-```go
-var (
-    // OsGetwd is a copy of os.Getwd to ease mocking during test.
-    //
-    // All functions of this package that needs to use os.Getwd uses OsGetwd instead.
-    // See the example in the test of ChDir for how-to-mock.
-    OsGetwd = os.Getwd
-    // OsChdir is a copy of os.Chdir to ease mocking during test.
-    //
-    // All functions of this package that needs to use os.Chdir uses OsChdir instead.
-    // See the example in the test of ChDir for how-to-mock.
-    OsChdir = os.Chdir
-)
-```
-
 MultibaseBase58BTC is a copy of multibase\.Base58BTC to ease mock multibase\.Base58BTC for testing\.
 
 This library uses MultibaseBase58BTC instead of multibase\.Base58BTC\, assign a dummy function to mock it's behavior\.
@@ -62,12 +47,28 @@ This library uses MultibaseBase58BTC instead of multibase\.Base58BTC\, assign a 
 var MultibaseBase58BTC multibase.Encoding = multibase.Base58BTC
 ```
 
+OsChdir is a copy of os\.Chdir to ease mocking during test\.
+
+All functions of this package that needs to use os\.Chdir uses OsChdir instead\. See the example in the test of ChDir for how\-to\-mock\.
+
+```go
+var OsChdir = os.Chdir
+```
+
 OsExit is a copy of os\.Exit to ease mocking during test\.
 
 All functions of this package that needs to use os\.Exit uses OsExit instead\. See the example of ExitOnError for how\-to\-mock\.
 
 ```go
 var OsExit = os.Exit
+```
+
+OsGetwd is a copy of os\.Getwd to ease mocking during test\.
+
+All functions of this package that needs to use os\.Getwd uses OsGetwd instead\. See the example in the test of ChDir for how\-to\-mock\.
+
+```go
+var OsGetwd = os.Getwd
 ```
 
 ReadBuildInfo is a copy of debug\.ReadBuildInfo to ease mocking during test for GetMods\.

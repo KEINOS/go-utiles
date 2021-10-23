@@ -4,18 +4,17 @@ import (
 	"os"
 )
 
-var (
-	// OsGetwd is a copy of os.Getwd to ease mocking during test.
-	//
-	// All functions of this package that needs to use os.Getwd uses OsGetwd instead.
-	// See the example in the test of ChDir for how-to-mock.
-	OsGetwd = os.Getwd
-	// OsChdir is a copy of os.Chdir to ease mocking during test.
-	//
-	// All functions of this package that needs to use os.Chdir uses OsChdir instead.
-	// See the example in the test of ChDir for how-to-mock.
-	OsChdir = os.Chdir
-)
+// OsGetwd is a copy of os.Getwd to ease mocking during test.
+//
+// All functions of this package that needs to use os.Getwd uses OsGetwd instead.
+// See the example in the test of ChDir for how-to-mock.
+var OsGetwd = os.Getwd
+
+// OsChdir is a copy of os.Chdir to ease mocking during test.
+//
+// All functions of this package that needs to use os.Chdir uses OsChdir instead.
+// See the example in the test of ChDir for how-to-mock.
+var OsChdir = os.Chdir
 
 // ChDir changes the current working directory to the given path in one-go.
 // It returns a function which moves back to the original directory.
