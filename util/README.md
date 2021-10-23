@@ -1373,6 +1373,8 @@ func main() {
 func VerifySUM(mask uint, input string, sum uint) bool
 ```
 
+VerifySUM returns true if the sum is a valid checksum of the input with the given mask\. The sum value should be created via SUM\(\) function with the same mask value\.
+
 <details><summary>Example</summary>
 <p>
 
