@@ -8,8 +8,8 @@ import (
 
 	"github.com/KEINOS/go-utiles/util"
 	"github.com/kami-zh/go-capturer"
+	"github.com/pkg/errors"
 	"github.com/stretchr/testify/assert"
-	"golang.org/x/xerrors"
 )
 
 // ----------------------------------------------------------------------------
@@ -52,7 +52,7 @@ func TestChDir_fail_get_working_dir(t *testing.T) {
 
 	// Mock the os.Getwd in util.OsGetwd
 	util.OsGetwd = func() (dir string, err error) {
-		return "", xerrors.New("foo\n") // Error occurred in line 55
+		return "", errors.New("foo\n") // Error occurred in line 55
 	}
 
 	// Mock the os.Getwd in util.OsGetwd

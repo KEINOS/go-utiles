@@ -1,14 +1,13 @@
 package util_test
 
 import (
-	"errors"
 	"fmt"
 	"testing"
 
 	"github.com/KEINOS/go-utiles/util"
 	"github.com/kami-zh/go-capturer"
+	"github.com/pkg/errors"
 	"github.com/stretchr/testify/assert"
-	"golang.org/x/xerrors"
 )
 
 // ----------------------------------------------------------------------------
@@ -58,7 +57,10 @@ func TestExitOnErr(t *testing.T) {
 	}
 
 	// Create error
-	err := xerrors.New("foo")
+	err := errors.New("foo")
+
+	// Wrap the error (stack error)
+	err = errors.Wrap(err, "wrapped")
 
 	// Test
 	out := capturer.CaptureStderr(func() {
@@ -67,6 +69,7 @@ func TestExitOnErr(t *testing.T) {
 
 	// Assertions
 	assert.Equal(t, 1, capStatus, "the exit status should be 1 on error")
-	assert.Contains(t, out, "ExitOnError_test.go:61", "the error should contain the line number")
+	assert.Contains(t, out, "ExitOnError_test.go:60", "stacked error should contain the line number")
+	assert.Contains(t, out, "ExitOnError_test.go:63", "stacked error should contain the line number")
 	assert.Contains(t, out, "foo", "the stderr should contain the original error message")
 }

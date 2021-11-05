@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strings"
 
-	"golang.org/x/xerrors"
+	"github.com/pkg/errors"
 )
 
 // UIntToBase58 returns Base58(BTC) encoded string of the given uint value.
@@ -15,7 +15,7 @@ import (
 func UIntToBase58(value uint) (string, error) {
 	result, err := EncodeBase58(ConvUint2Bytes(value))
 	if err != nil {
-		return "", xerrors.New(err.Error())
+		return "", errors.Wrap(err, "failed to convert uint to base58")
 	}
 
 	// Make 1 digit result to two, such as "z" -> "0z" then replace the "0" to

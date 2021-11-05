@@ -1,7 +1,7 @@
 package util
 
 import (
-	"golang.org/x/xerrors"
+	"github.com/pkg/errors"
 	"lukechampine.com/blake3"
 )
 
@@ -16,7 +16,7 @@ import (
 // (Base58BTC) and returns the first "lenHash" bytes of the results.
 func HashBLAKE3(input string, lenHash int) (hashed string, err error) {
 	if lenHash > 1024 || lenHash < 1 {
-		return "", xerrors.Errorf("length error. It should be between 1-1024. Len:%v", lenHash)
+		return "", errors.Errorf("length error. It should be between 1-1024. Len:%v", lenHash)
 	}
 
 	// BLAKE3 hasher

@@ -3,8 +3,6 @@ package util
 import (
 	"fmt"
 	"os"
-
-	"golang.org/x/xerrors"
 )
 
 // OsExit is a copy of os.Exit to ease mocking during test.
@@ -18,10 +16,11 @@ var OsExit = os.Exit
 // To test this function, mock the OsExit function variable.
 // See ExitOnError_test.go for an example.
 func ExitOnErr(err error) {
-	if err != nil {
-		wrap := xerrors.Errorf("Errors from: %+w", err)
-		fmt.Fprintf(os.Stderr, "%v", wrap)
-
-		OsExit(1)
+	if err == nil {
+		return
 	}
+
+	fmt.Fprintf(os.Stderr, "%+v\n", err)
+
+	OsExit(1)
 }
