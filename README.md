@@ -10,15 +10,10 @@ Yet, another utilitiy package of Go.
 go get github.com/KEINOS/go-utiles
 ```
 
-```go
-// import github.com/KEINOS/go-utiles/util
+For available functions and example usages, see:
 
-err := errors.New("something went wrong")
-
-util.ExitOnError(err)
-```
-
-For available functions/example usage, see the [./util/README.md](https://github.com/KEINOS/go-utiles/tree/main/util) or the automated [reference](https://pkg.go.dev/github.com/KEINOS/go-utiles/util) at `pkg.go.dev`.
+- Doc [./util/README.md](https://github.com/KEINOS/go-utiles/tree/main/util#index)
+- or the automated [reference](https://pkg.go.dev/github.com/KEINOS/go-utiles/util) at `pkg.go.dev`
 
 ---
 
