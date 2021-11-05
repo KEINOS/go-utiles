@@ -534,9 +534,9 @@ To test this function\, mock the OsExit function variable\. See ExitOnError\_tes
 package main
 
 import (
-	"errors"
 	"fmt"
 	"github.com/KEINOS/go-utiles/util"
+	"github.com/pkg/errors"
 )
 
 func main() {
