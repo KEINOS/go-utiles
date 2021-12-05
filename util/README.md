@@ -24,6 +24,7 @@ import "github.com/KEINOS/go-utiles/util"
 - [func GetNameBin() string](<#func-getnamebin>)
 - [func HashBLAKE3(input string, lenHash int) (hashed string, err error)](<#func-hashblake3>)
 - [func HashStruct(input interface{}, lenHash int) (string, error)](<#func-hashstruct>)
+- [func HereDoc(input string, indents ...string) string](<#func-heredoc>)
 - [func IsDir(pathFile string) bool](<#func-isdir>)
 - [func IsFile(pathFile string) bool](<#func-isfile>)
 - [func IsNameFileJSON(name string) bool](<#func-isnamefilejson>)
@@ -326,7 +327,7 @@ func main() {
 </p>
 </details>
 
-<details><summary>Example</summary>
+<details><summary>Example (Negative_value)</summary>
 <p>
 
 ```go
@@ -581,7 +582,7 @@ FmtStructPretty formats JSON string or an object into pretty\-indented JSON\-str
 
 If a prefix is provided then it will add the prefix to each line\.
 
-<details><summary>Example</summary>
+<details><summary>Example (Json)</summary>
 <p>
 
 ```go
@@ -616,7 +617,7 @@ func main() {
 </p>
 </details>
 
-<details><summary>Example</summary>
+<details><summary>Example (Slice)</summary>
 <p>
 
 ```go
@@ -894,6 +895,82 @@ Hash value after change : 6aESjhTWhk3Tv91h
 </p>
 </details>
 
+## func HereDoc
+
+```go
+func HereDoc(input string, indents ...string) string
+```
+
+HereDoc returns an un\-indented string such as here\-document\-like format\. Useful for help messages to print\.
+
+If indents were given it will use as a prefix of each line\.
+
+<details><summary>Example</summary>
+<p>
+
+```go
+package main
+
+import (
+	"fmt"
+	"github.com/KEINOS/go-utiles/util"
+)
+
+func main() {
+	msg := util.HereDoc(`
+        Here Title
+            Here description
+	`)
+
+	fmt.Println(msg)
+
+}
+```
+
+#### Output
+
+```
+Here Title
+    Here description
+```
+
+</p>
+</details>
+
+<details><summary>Example (Optional_indentation)</summary>
+<p>
+
+```go
+package main
+
+import (
+	"fmt"
+	"github.com/KEINOS/go-utiles/util"
+)
+
+func main() {
+	input := `
+        Here Title
+            Here description
+`
+	indent := "> " // prefix of each line
+
+	fmt.Println(util.HereDoc(input, indent))
+
+}
+```
+
+#### Output
+
+```
+> Here Title
+>     Here description
+>
+```
+
+</p>
+</details>
+
 ## func IsDir
 
 ```go
@@ -1152,7 +1229,7 @@ func main() {
 </p>
 </details>
 
-<details><summary>Example</summary>
+<details><summary>Example (More_accurate)</summary>
 <p>
 
 ```go
@@ -1194,7 +1271,7 @@ Base58 encoded: CV (string)
 </p>
 </details>
 
-<details><summary>Example</summary>
+<details><summary>Example (With_verify)</summary>
 <p>
 
 ```go
@@ -1288,7 +1365,7 @@ BukQL
 </p>
 </details>
 
-<details><summary>Example</summary>
+<details><summary>Example (More_accurate)</summary>
 <p>
 
 This function is used when you need a more accurate checksum in 2 digit string\.
