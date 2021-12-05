@@ -6,10 +6,10 @@ import (
 	"github.com/MakeNowJust/heredoc"
 )
 
-// HereDoc returns an un-indented string as here-document-like format.
+// HereDoc returns an un-indented string such as here-document-like format.
+// Useful for help messages to print.
 //
-// If indents was given, it first will un-indent then indents with the given
-// joined indent.
+// If indents were given it will use as a prefix of each line.
 func HereDoc(input string, indents ...string) string {
 	input = heredoc.Doc(input)
 
@@ -21,9 +21,14 @@ func HereDoc(input string, indents ...string) string {
 	indent := strings.Join(indents, "")
 
 	for i, line := range lines {
-		if strings.TrimSpace(line) != "" {
-			lines[i] = indent + line
+		indented := indent + line
+
+		// trim trailing whitespace if line is empty
+		if strings.TrimSpace(line) == "" {
+			indented = strings.TrimSpace(indented)
 		}
+
+		lines[i] = indented
 	}
 
 	return strings.Join(lines, "\n")

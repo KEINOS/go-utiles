@@ -1,11 +1,40 @@
 package util_test
 
 import (
+	"fmt"
 	"testing"
 
 	"github.com/KEINOS/go-utiles/util"
 	"github.com/stretchr/testify/assert"
 )
+
+func ExampleHereDoc() {
+	msg := util.HereDoc(`
+        Here Title
+            Here description
+	`)
+
+	fmt.Println(msg)
+
+	// Output:
+	// Here Title
+	//     Here description
+}
+
+func ExampleHereDoc_optional_indentation() {
+	input := `
+        Here Title
+            Here description
+`
+	indent := "> " // prefix of each line
+
+	fmt.Println(util.HereDoc(input, indent))
+
+	// Output:
+	// > Here Title
+	// >     Here description
+	// >
+}
 
 func TestHereDoc(t *testing.T) {
 	input := `
