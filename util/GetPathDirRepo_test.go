@@ -11,13 +11,16 @@ import (
 )
 
 func TestGetPathDirRepo(t *testing.T) {
+	// Same as t.TempDir but for Go 1.14 compatibility
+	pathDirRepo, cleanup := util.GetTempDir()
+	defer cleanup()
+
 	// Create dummy directory structure
 	//   .
 	// 	 ├── .git/
 	// 	 └── foo/
 	// 	     └── bar/
 	// 	         └── buzz/
-	pathDirRepo := t.TempDir()
 	pathDirGit := filepath.Join(pathDirRepo, ".git")
 	pathDirDeep := filepath.Join(pathDirRepo, "foo", "bar", "buzz")
 
@@ -29,6 +32,7 @@ func TestGetPathDirRepo(t *testing.T) {
 		t.Fatal(err)
 	}
 
+	// Change dir to foo/bar/buzz/
 	goBackOrign := util.ChDir(pathDirDeep)
 	defer goBackOrign()
 

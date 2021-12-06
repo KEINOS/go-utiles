@@ -1,6 +1,8 @@
 package util
 
-import "path/filepath"
+import (
+	"path/filepath"
+)
 
 // GetPathDirRepo returns the root directory of the current git repo.
 // If no ".git" directory found then returns "".
