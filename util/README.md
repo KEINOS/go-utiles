@@ -22,12 +22,15 @@ import "github.com/KEINOS/go-utiles/util"
 - [func GenMask(lenBit int) uint](<#func-genmask>)
 - [func GetMods() []map[string]string](<#func-getmods>)
 - [func GetNameBin() string](<#func-getnamebin>)
+- [func GetPathDirRepo() string](<#func-getpathdirrepo>)
+- [func GetTempDir() (pathDir string, cleanup func())](<#func-gettempdir>)
 - [func HashBLAKE3(input string, lenHash int) (hashed string, err error)](<#func-hashblake3>)
 - [func HashStruct(input interface{}, lenHash int) (string, error)](<#func-hashstruct>)
 - [func HereDoc(input string, indents ...string) string](<#func-heredoc>)
 - [func IsDir(pathFile string) bool](<#func-isdir>)
 - [func IsFile(pathFile string) bool](<#func-isfile>)
 - [func IsNameFileJSON(name string) bool](<#func-isnamefilejson>)
+- [func ParseVersion(version string) (parsed map[string]string, err error)](<#func-parseversion>)
 - [func PathExists(path string) bool](<#func-pathexists>)
 - [func RandStr(length int) string](<#func-randstr>)
 - [func ReadFile(path string) ([]byte, error)](<#func-readfile>)
@@ -786,6 +789,54 @@ util.test
 </p>
 </details>
 
+## func GetPathDirRepo
+
+```go
+func GetPathDirRepo() string
+```
+
+GetPathDirRepo returns the root directory of the current git repo\. If no "\.git" directory found then returns ""\.
+
+It will search up the directory from the current working dir upto the depth level\.
+
+## func GetTempDir
+
+```go
+func GetTempDir() (pathDir string, cleanup func())
+```
+
+GetTempDir returns a temporary directory and the cleanup function for the test to use\. It is similar to T\.TempDir\(\) but for Go 1\.14 compatibility\.
+
+<details><summary>Example</summary>
+<p>
+
+```go
+package main
+
+import (
+	"fmt"
+	"github.com/KEINOS/go-utiles/util"
+)
+
+func main() {
+	pathDir, cleanup := util.GetTempDir()
+	defer cleanup()
+
+	if util.IsDir(pathDir) {
+		fmt.Println("directory exists")
+	}
+}
+```
+
+#### Output
+
+```
+directory exists
+```
+
+</p>
+</details>
+
 ## func HashBLAKE3
 
 ```go
@@ -1093,6 +1144,27 @@ func main() {
 
 </p>
 </details>
+
+## func ParseVersion
+
+```go
+func ParseVersion(version string) (parsed map[string]string, err error)
+```
+
+ParseVersion parses a version string into a mapped data\.
+
+It is similar to go's semver package\, but it includes a build string as well\. This function is compatible with git\-tagged versions\.
+
+```
+ParseVersion("v1.2.3-alpha-abcde123")
+// => map[string]string{
+//      "major": "1",
+//      "minor": "2",
+//      "patch": "3",
+//      "prerelease": "alpha",
+//      "build": "abcde123",
+//    }, nil
+```
 
 ## func PathExists
 
