@@ -23,6 +23,7 @@ import "github.com/KEINOS/go-utiles/util"
 - [func GetMods() []map[string]string](<#func-getmods>)
 - [func GetNameBin() string](<#func-getnamebin>)
 - [func GetPathDirRepo() string](<#func-getpathdirrepo>)
+- [func GetTempDir() (pathDir string, cleanup func())](<#func-gettempdir>)
 - [func HashBLAKE3(input string, lenHash int) (hashed string, err error)](<#func-hashblake3>)
 - [func HashStruct(input interface{}, lenHash int) (string, error)](<#func-hashstruct>)
 - [func HereDoc(input string, indents ...string) string](<#func-heredoc>)
@@ -797,6 +798,44 @@ func GetPathDirRepo() string
 GetPathDirRepo returns the root directory of the current git repo\. If no "\.git" directory found then returns ""\.
 
 It will search up the directory from the current working dir upto the depth level\.
+
+## func GetTempDir
+
+```go
+func GetTempDir() (pathDir string, cleanup func())
+```
+
+GetTempDir returns a temporary directory and the cleanup function for the test to use\. It is similar to T\.TempDir\(\) but for Go 1\.14 compatibility\.
+
+<details><summary>Example</summary>
+<p>
+
+```go
+package main
+
+import (
+	"fmt"
+	"github.com/KEINOS/go-utiles/util"
+)
+
+func main() {
+	pathDir, cleanup := util.GetTempDir()
+	defer cleanup()
+
+	if util.IsDir(pathDir) {
+		fmt.Println("directory exists")
+	}
+}
+```
+
+#### Output
+
+```
+directory exists
+```
+
+</p>
+</details>
 
 ## func HashBLAKE3
 
