@@ -32,7 +32,7 @@ func TestParseVersion(t *testing.T) {
 			map[string]string{"major": "1", "minor": "2", "patch": "3", "prerelease": "", "build": "foobar"},
 			"v1.2.3 (foobar)",
 		},
-		// Variationq
+		// Variation
 		{
 			map[string]string{"major": "1", "minor": "0", "patch": "0", "prerelease": "", "build": ""},
 			"1",
@@ -52,6 +52,11 @@ func TestParseVersion(t *testing.T) {
 		{
 			map[string]string{"major": "1", "minor": "2", "patch": "3", "prerelease": "", "build": "12345"},
 			"v1.2.3+12345",
+		},
+		// Issue #10
+		{
+			map[string]string{"major": "1", "minor": "2", "patch": "3", "prerelease": "", "build": "12345"},
+			"v.1.2.3+12345",
 		},
 	} {
 		actual, err := util.ParseVersion(test.input)
