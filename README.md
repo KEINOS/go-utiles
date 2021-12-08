@@ -4,7 +4,7 @@
 
 # go-utiles
 
-Yet, another utilitiy package of Go.
+Yet, another utility package of Go.
 
 ```bash
 go get github.com/KEINOS/go-utiles
