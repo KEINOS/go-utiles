@@ -20,6 +20,6 @@ RUN apk add --no-cache \
     build-base \
     && \
     # pre-download go modules (issue #12)
-    go mod download
+    go mod download -x
 
 ENTRYPOINT go mod download && go test ./...
