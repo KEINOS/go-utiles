@@ -26,7 +26,10 @@ func ParseVersion(version string) (parsed map[string]string, err error) {
 	result = strings.ReplaceAll(result, "(", "+")
 	result = strings.ReplaceAll(result, ")", "")
 
-	// Add 'v' prefix for Go semver parse compatibility
+	// Trim the leading v, dot and spaces v.1.2.3 --> 1.2.3 (Issue #10 fix)
+	result = strings.TrimLeft(result, "v. ")
+
+	// Re-add 'v' prefix for Go semver parse compatibility
 	if result[0] != 'v' {
 		result = "v" + result
 	}
