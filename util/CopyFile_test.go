@@ -3,6 +3,8 @@ package util_test
 
 import (
 	"fmt"
+	"io"
+	"io/ioutil"
 	"log"
 	"os"
 	"path/filepath"
@@ -29,7 +31,7 @@ func ExampleCopyFile() {
 	}
 
 	// Read copied contents for testing
-	contByte, err := os.ReadFile(to)
+	contByte, err := ioutil.ReadFile(to)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -154,26 +156,23 @@ func TestCopyFile_fail_to_create_file(t *testing.T) {
 
 func TestCopyFile_fail_to_read_written_file(t *testing.T) {
 	// Backup and defer recover
-	oldOsCreate := util.OsCreate
+	oldIoCopy := util.IoCopy
 	defer func() {
-		util.OsCreate = oldOsCreate
+		util.IoCopy = oldIoCopy
 	}()
 
 	// Mock
-	util.OsCreate = func(name string) (*os.File, error) {
-		return nil, nil
+	util.IoCopy = func(dst io.Writer, src io.Reader) (written int64, err error) {
+		return 0, errors.New("forced error")
 	}
 
 	// Create dummy file
 	pathDirTemp, cleanup := util.GetTempDir()
 	defer cleanup()
 
-	fp, err := util.CreateTemp(pathDirTemp, "*")
-	require.NoError(t, err, "failed to open temp file")
+	pathFileTemp := filepath.Join(pathDirTemp, util.RandStr(16))
 
-	pathFileTemp := fp.Name()
-
-	err = fp.Close()
+	err := ioutil.WriteFile(pathFileTemp, []byte{}, 0o600)
 	require.NoError(t, err, "failed to close temp file")
 
 	// Assertion
