@@ -1,8 +1,6 @@
 name: "Codecov"
 
 on:
-  push:
-    branches: [ main ]
   pull_request:
     # The branches below must be a subset of the branches above
     branches: [ main ]
@@ -21,3 +19,5 @@ jobs:
         run: docker-compose --file ./.github/docker-compose.yml run coverage
       - name: Upload coverage to Codecov
         run: bash <(curl -s https://codecov.io/bash)
+      - name: Run tests on latest Go with race
+        run: docker-compose --file ./.github/docker-compose.yml run race

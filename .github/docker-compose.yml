@@ -43,6 +43,14 @@ services:
         VARIANT: alpine
     volumes:
       - ..:/workspaces
+  race:
+    build:
+      context: ..
+      dockerfile: ./.github/Dockerfile
+      args:
+        VARIANT: alpine
+    volumes:
+      - ..:/workspaces
     entrypoint: go test -race ./...
   coverage:
     build:
