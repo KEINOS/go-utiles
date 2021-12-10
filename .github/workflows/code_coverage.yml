@@ -20,4 +20,5 @@ jobs:
       - name: Upload coverage to Codecov
         run: bash <(curl -s https://codecov.io/bash)
       - name: Run tests on latest Go with race
+        if: github.event.pull_request.action == 'opened'
         run: docker-compose --file ./.github/docker-compose.yml run race
