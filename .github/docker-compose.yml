@@ -43,6 +43,7 @@ services:
         VARIANT: alpine
     volumes:
       - ..:/workspaces
+    entrypoint: go test -race ./...
   coverage:
     build:
       context: ..
