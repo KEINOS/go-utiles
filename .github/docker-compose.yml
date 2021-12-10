@@ -43,3 +43,12 @@ services:
         VARIANT: alpine
     volumes:
       - ..:/workspaces
+  coverage:
+    build:
+      context: ..
+      dockerfile: ./.github/Dockerfile
+      args:
+        VARIANT: 1.14-alpine
+    volumes:
+      - ..:/workspaces
+    entrypoint: go test -coverprofile=coverage.out -covermode=atomic ./...

@@ -24,5 +24,3 @@ jobs:
         run: go test -race -coverprofile=coverage.out -covermode=atomic ./...
       - name: Upload coverage to Codecov
         run: bash <(curl -s https://codecov.io/bash)
-      - name: Get PR title
-        run: echo "PR TITILE:" ${{ github.event.pull_request.title }}
