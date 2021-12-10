@@ -70,9 +70,6 @@ jobs:
           docker save --output ${{ steps.imagetag.outputs.PATH_TAR }}/github_v1_17_1.tar github_v1_17:latest
           docker save --output ${{ steps.imagetag.outputs.PATH_TAR }}/github_latest_1.tar github_latest:latest
 
-      - name: Get PR title
-        run: echo "PR TITILE:" ${{ github.event.pull_request.title }}
-
       - name: Run tests on Go 1.14
         run: docker-compose --file ./.github/docker-compose.yml run v1_14
       - name: Run tests on Go 1.15
