@@ -78,5 +78,5 @@ jobs:
         run: docker-compose --file ./.github/docker-compose.yml run v1_16
       - name: Run tests on Go 1.17
         run: docker-compose --file ./.github/docker-compose.yml run v1_17
-      - name: Run tests on latest Go with race
+      - name: Run tests on latest Go
         run: docker-compose --file ./.github/docker-compose.yml run latest
