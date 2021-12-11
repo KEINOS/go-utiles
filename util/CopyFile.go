@@ -18,6 +18,10 @@ var IoCopy = io.Copy
 
 // CopyFile copies the file from to.
 func CopyFile(from, to string) error {
+	if from == to {
+		return errors.Errorf("input and output are the same path.\nIn: %v\nOut: %v", from, to)
+	}
+
 	if !IsFile(from) {
 		return errors.Errorf("failed to copy. input path is not a file: %v", from)
 	}

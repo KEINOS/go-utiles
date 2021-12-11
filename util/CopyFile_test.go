@@ -68,30 +68,6 @@ func getPathFileToCopyTo() string {
 //  Tests
 // ----------------------------------------------------------------------------
 
-func TestCopyFile_path_is_a_dir(t *testing.T) {
-	pathDirTemp, cleanup := util.GetTempDir()
-	defer cleanup()
-
-	// Create
-	fp, err := util.CreateTemp(pathDirTemp, "*")
-	require.NoError(t, err, "failed to open temp file")
-
-	pathFileTemp := fp.Name()
-
-	err = fp.Close()
-	require.NoError(t, err, "failed to close temp file")
-
-	// from is a dir
-	err = util.CopyFile(pathDirTemp, pathFileTemp)
-	require.Error(t, err, "it should return an error if the path is a dir")
-	assert.Contains(t, err.Error(), "failed to copy. input path is not a file")
-
-	// to is a dir
-	err = util.CopyFile(pathFileTemp, pathDirTemp)
-	require.Error(t, err, "it should return an error if the path is a dir")
-	assert.Contains(t, err.Error(), "failed to copy. output path is a dir")
-}
-
 func TestCopyFile_fail_to_open_file(t *testing.T) {
 	// Backup and defer recover
 	oldOsOpen := util.OsOpen
@@ -111,13 +87,14 @@ func TestCopyFile_fail_to_open_file(t *testing.T) {
 	fp, err := util.CreateTemp(pathDirTemp, "*")
 	require.NoError(t, err, "failed to open temp file")
 
-	pathFileTemp := fp.Name()
+	pathFileFrom := os.Args[0]
+	pathFileTo := fp.Name()
 
 	err = fp.Close()
 	require.NoError(t, err, "failed to close temp file")
 
 	// Assertion
-	err = util.CopyFile(pathFileTemp, pathFileTemp)
+	err = util.CopyFile(pathFileFrom, pathFileTo)
 
 	require.Error(t, err)
 	assert.Contains(t, err.Error(), "failed to open file")
@@ -142,13 +119,14 @@ func TestCopyFile_fail_to_create_file(t *testing.T) {
 	fp, err := util.CreateTemp(pathDirTemp, "*")
 	require.NoError(t, err, "failed to open temp file")
 
-	pathFileTemp := fp.Name()
+	pathFileFrom := os.Args[0]
+	pathFileTo := fp.Name()
 
 	err = fp.Close()
 	require.NoError(t, err, "failed to close temp file")
 
 	// Assertion
-	err = util.CopyFile(pathFileTemp, pathFileTemp)
+	err = util.CopyFile(pathFileFrom, pathFileTo)
 
 	require.Error(t, err)
 	assert.Contains(t, err.Error(), "failed to create file before write")
@@ -170,14 +148,46 @@ func TestCopyFile_fail_to_read_written_file(t *testing.T) {
 	pathDirTemp, cleanup := util.GetTempDir()
 	defer cleanup()
 
-	pathFileTemp := filepath.Join(pathDirTemp, util.RandStr(16))
+	pathFileFrom := os.Args[0]
+	pathFileTo := filepath.Join(pathDirTemp, util.RandStr(16))
 
-	err := ioutil.WriteFile(pathFileTemp, []byte{}, 0o600)
+	err := ioutil.WriteFile(pathFileTo, []byte{}, 0o600)
 	require.NoError(t, err, "failed to close temp file")
 
 	// Assertion
-	err = util.CopyFile(pathFileTemp, pathFileTemp)
+	err = util.CopyFile(pathFileFrom, pathFileTo)
 
 	require.Error(t, err)
 	assert.Contains(t, err.Error(), "failed to write file")
+}
+
+func TestCopyFile_path_is_a_dir(t *testing.T) {
+	pathDirTemp, cleanup := util.GetTempDir()
+	defer cleanup()
+
+	// Create
+	fp, err := util.CreateTemp(pathDirTemp, "*")
+	require.NoError(t, err, "failed to open temp file")
+
+	pathFileTemp := fp.Name()
+
+	err = fp.Close()
+	require.NoError(t, err, "failed to close temp file")
+
+	// from is a dir
+	err = util.CopyFile(pathDirTemp, pathFileTemp)
+	require.Error(t, err, "it should return an error if the path is a dir")
+	assert.Contains(t, err.Error(), "failed to copy. input path is not a file")
+
+	// to is a dir
+	err = util.CopyFile(pathFileTemp, pathDirTemp)
+	require.Error(t, err, "it should return an error if the path is a dir")
+	assert.Contains(t, err.Error(), "failed to copy. output path is a dir")
+}
+
+func TestCopyFile_same_input_and_output_path(t *testing.T) {
+	dummyPath := os.Args[0]
+
+	err := util.CopyFile(dummyPath, dummyPath)
+	require.Error(t, err, "it should be an error if both args are equal")
 }
