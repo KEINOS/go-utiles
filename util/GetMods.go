@@ -41,9 +41,13 @@ func GetMods() []map[string]string {
 }
 
 func getModName(modDep *debug.Module) string {
-	noVer := strings.ReplaceAll(modDep.Path, "/"+modDep.Version, "")
+	result := filepath.Base(modDep.Path)
 
-	return filepath.Base(noVer)
+	if chunk := strings.SplitN(modDep.Path, "/", 3); len(chunk) > 2 {
+		result = chunk[2] // Get the 3rd chunk
+	}
+
+	return result
 }
 
 func getModuleInfo() []*debug.Module {

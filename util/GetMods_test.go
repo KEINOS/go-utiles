@@ -74,6 +74,6 @@ func TestGetMods_issue1(t *testing.T) {
 	listMods := util.GetMods()
 
 	assert.Equal(t, "github.com/jedib0t/go-pretty/v6", listMods[0]["path"])
-	assert.Equal(t, "go-pretty", listMods[0]["name"])
+	assert.Equal(t, "go-pretty/v6", listMods[0]["name"])
 	assert.Equal(t, "v6", listMods[0]["version"])
 }
