@@ -14,11 +14,13 @@ func Test_getModName_issue_1(t *testing.T) {
 	}{
 		{"github.com/jedib0t/go-pretty/v6", "go-pretty/v6"},
 		{"github.com/klauspost/cpuid/v2", "cpuid/v2"},
+		{"lukechampine.com/blake3", "blake3"},
+		{"gopkg.in/yaml.v3", "yaml.v3"},
 	} {
 		m := &debug.Module{
 			Path:    test.in,
-			Version: "0.0.0",
-			Sum:     "ffffffff",
+			Version: "0.0.0",    // dummy
+			Sum:     "ffffffff", // dummy
 		}
 
 		expect := test.out
